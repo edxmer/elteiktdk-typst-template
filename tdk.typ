@@ -291,9 +291,12 @@
 
   // -- Global settings --------------------------------------------------------
   set document(title: title, author: authors.map(a => a.name))
+  // Symmetric margins keep the text block centred on the paper. If you want a
+  // binding margin instead, move 5mm from the right to the left, i.e.
+  // (left: 35mm, right: 25mm, ...).
   set page(
     paper: "a4",
-    margin: (left: 35mm, right: 25mm, top: 25mm, bottom: 25mm),
+    margin: (left: 30mm, right: 30mm, top: 25mm, bottom: 25mm),
     numbering: none,
   )
   set text(
