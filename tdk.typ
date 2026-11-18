@@ -116,8 +116,8 @@
 
 /// An unindented block with a run-in label, like the amsthm styles.
 #let theorem-block(label, italic: false, body) = block(
-  above: 0.6em,
-  below: 0.6em,
+  above: 19.5pt,
+  below: 19.5pt,
   {
     set par(first-line-indent: 0em)
     set text(style: if italic { "italic" } else { "normal" })
@@ -145,8 +145,8 @@
 
 /// `#proof[..]` -- an unnumbered proof closed by an open square.
 #let proof(body) = block(
-  above: 0.6em,
-  below: 0.6em,
+  above: 19.5pt,
+  below: 19.5pt,
   {
     set par(first-line-indent: 0em)
     emph(context strings-state.get().proof + ".") + [ ] + body + h(1fr) + $square.stroked$
@@ -329,11 +329,18 @@
   show list: block.with(above: 22pt, below: 22pt)
   show enum: block.with(above: 22pt, below: 22pt)
   show terms: block.with(above: 22pt, below: 22pt)
-  // Floats and display equations keep their distance from the text.
-  show figure: block.with(above: 12pt, below: 12pt)
-  show math.equation.where(block: true): block.with(above: 12pt, below: 12pt)
+  // Floats and displayed equations keep their distance from the text
+  // (LaTeX's \intextsep and \abovedisplayskip, plus the line the TeX engine
+  // adds between two blocks).
+  set figure(gap: 10pt)
+  show figure: block.with(above: 16pt, below: 28pt)
+  // A code listing carries its frame and inset itself, so it needs less room.
+  show figure.where(kind: "code"): block.with(above: 5pt, below: 28pt)
+  show math.equation.where(block: true): block.with(above: 19pt, below: 23pt)
   show outline.entry.where(level: 1): set text(weight: "bold")
   show bibliography: set heading(numbering: none)
+  // One line of space between the entries, as in biblatex.
+  show bibliography: set par(spacing: 1.2em)
   show outline: set heading(numbering: none)
 
   // -- Running header ---------------------------------------------------------
