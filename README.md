@@ -19,6 +19,16 @@ Compile the example with:
 typst compile main.typ      # or: typst watch main.typ
 ```
 
+## Typography
+
+Body text is set the way the LaTeX class sets it: Times, 12pt, 1.5 line
+spacing, justified, and paragraphs are separated by their first-line indent
+only -- there is no extra vertical space between them. The space around
+headings, lists, floats and their captions, displayed equations, theorem-like
+blocks, code listings and bibliography entries is calibrated against the LaTeX
+output, so both templates paginate in the same rhythm. Do not add
+`par(spacing: ...)` on top of it: it shifts all of those gaps.
+
 ## Getting started
 
 ```typst
