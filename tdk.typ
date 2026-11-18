@@ -305,13 +305,15 @@
     top-edge: "ascender",
     bottom-edge: "descender",
   )
-  // 1.5 line spacing as in the LaTeX class (20.6pt between baselines), no
-  // vertical space between paragraphs -- they are separated by their indent --
-  // and justified text, like LaTeX does it by default.
+  // 1.5 line spacing as in the LaTeX class (20.6pt between baselines) and
+  // justified text. Consecutive paragraphs are one line apart and are only set
+  // apart by their indent, exactly like LaTeX with \parskip = 0pt: Typst's
+  // `spacing` is measured between line boxes, so it has to be as large as the
+  // leading to yield a full baselineskip between two paragraphs.
   set par(
     leading: 0.8em,
     justify: true,
-    spacing: 0em,
+    spacing: 0.8em,
     first-line-indent: (amount: 1.5em, all: true),
   )
   set heading(numbering: section-numbering)
@@ -372,7 +374,7 @@
       above: 0pt,
       below: 44pt,
       {
-        set par(first-line-indent: 0pt)
+        set par(first-line-indent: 0pt, spacing: 0pt)
         v(90pt)
         if it.numbering != none {
           let label = if appendix-state.get() { t.appendix } else { t.chapter }
@@ -417,7 +419,7 @@
   // do not leak into the rest of the document.
   {
     set align(center)
-    set par(first-line-indent: 0pt, justify: false)
+    set par(first-line-indent: 0pt, justify: false, spacing: 0pt)
     v(1fr)
     text(size: size-medium, weight: "bold", t.cover)
     v(1fr)
@@ -429,7 +431,7 @@
   // -- Title page ---------------------------------------------------------------
   {
     set align(center)
-    set par(first-line-indent: 0pt, justify: false)
+    set par(first-line-indent: 0pt, justify: false, spacing: 0pt)
 
     // A title is never hyphenated nor justified, only centred.
     text(size: size-huge, weight: "bold", hyphenate: false, title)
