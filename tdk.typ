@@ -305,9 +305,15 @@
     top-edge: "ascender",
     bottom-edge: "descender",
   )
-  // 1.5 line spacing as in the LaTeX class (20.6pt between baselines), and no
-  // vertical space between paragraphs -- they are separated by their indent.
-  set par(leading: 0.8em, spacing: 0em, first-line-indent: (amount: 1.5em, all: true))
+  // 1.5 line spacing as in the LaTeX class (20.6pt between baselines), no
+  // vertical space between paragraphs -- they are separated by their indent --
+  // and justified text, like LaTeX does it by default.
+  set par(
+    leading: 0.8em,
+    justify: true,
+    spacing: 0em,
+    first-line-indent: (amount: 1.5em, all: true),
+  )
   set heading(numbering: section-numbering)
   set figure(numbering: "1")
   set math.equation(numbering: "1")
@@ -359,6 +365,7 @@
       above: 0pt,
       below: 44pt,
       {
+        set par(first-line-indent: 0pt)
         v(90pt)
         if it.numbering != none {
           let label = if appendix-state.get() { t.appendix } else { t.chapter }
@@ -377,10 +384,13 @@
   let section-heading(it, size: 12pt, above: 33pt) = block(
     above: above,
     below: 21pt,
-    text(size: size, weight: "bold")[
-      #if it.numbering != none [#context counter(heading).display(it.numbering)#h(0.5em)]
-      #it.body
-    ],
+    {
+      set par(first-line-indent: 0pt)
+      text(size: size, weight: "bold")[
+        #if it.numbering != none [#context counter(heading).display(it.numbering)#h(0.5em)]
+        #it.body
+      ]
+    },
   )
   show heading.where(level: 2): section-heading.with(size: size-large, above: 38pt)
   show heading.where(level: 3): section-heading.with(size: size-medium, above: 33pt)
@@ -396,43 +406,53 @@
   )
 
   // -- Cover page ---------------------------------------------------------------
-  set align(center)
-  v(1fr)
-  text(size: size-medium, weight: "bold", t.cover)
-  v(1fr)
-  person-row(authors)
-  v(1fr)
+  // The blocks below are scoped, so that their alignment and paragraph settings
+  // do not leak into the rest of the document.
+  {
+    set align(center)
+    set par(first-line-indent: 0pt, justify: false)
+    v(1fr)
+    text(size: size-medium, weight: "bold", t.cover)
+    v(1fr)
+    person-row(authors)
+    v(1fr)
+  }
   pagebreak()
 
   // -- Title page ---------------------------------------------------------------
-  text(size: size-huge, weight: "bold", title)
-  v(1.5cm)
-  text(size: size-LARGE, upper(university))
-  v(0.7cm)
-  text(size: size-large, upper(faculty))
-  v(0.7cm)
-  text(size: size-medium, upper(department))
-  v(1cm)
-  if logo != none {
-    image(logo, width: 30%)
+  {
+    set align(center)
+    set par(first-line-indent: 0pt, justify: false)
+
+    // A title is never hyphenated nor justified, only centred.
+    text(size: size-huge, weight: "bold", hyphenate: false, title)
+    v(1.5cm)
+    text(size: size-LARGE, upper(university))
+    v(0.7cm)
+    text(size: size-large, upper(faculty))
+    v(0.7cm)
+    text(size: size-medium, upper(department))
     v(1cm)
+    if logo != none {
+      image(logo, width: 30%)
+      v(1cm)
+    }
+
+    text(size: size-medium, style: "italic", (if authors.len() > 1 { t.authors } else { t.author }) + ":")
+    v(0.7cm)
+    person-row(authors.map(a => (name: a.name, lines: (a.degree, a.period))))
+
+    v(1.5cm)
+    text(size: size-medium, style: "italic", (if supervisors.len() > 1 { t.supervisors } else { t.supervisor }) + ":")
+    v(0.7cm)
+    person-row(supervisors.map(s => (name: s.name, lines: (s.affiliation,))))
+
+    v(1fr)
+    text(size: size-medium, style: "italic", [#city, #year])
   }
-
-  text(size: size-medium, style: "italic", (if authors.len() > 1 { t.authors } else { t.author }) + ":")
-  v(0.7cm)
-  person-row(authors.map(a => (name: a.name, lines: (a.degree, a.period))))
-
-  v(1.5cm)
-  text(size: size-medium, style: "italic", (if supervisors.len() > 1 { t.supervisors } else { t.supervisor }) + ":")
-  v(0.7cm)
-  person-row(supervisors.map(s => (name: s.name, lines: (s.affiliation,))))
-
-  v(1fr)
-  text(size: size-medium, style: "italic", [#city, #year])
   pagebreak()
 
   // -- Table of contents --------------------------------------------------------
-  set align(left)
   heading(numbering: none, outlined: false, t.contents)
   outline(title: none, depth: 3, indent: 1.5em)
   pagebreak()
