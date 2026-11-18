@@ -112,6 +112,11 @@ and the back matter lists are all localised.
 
 These are deliberate; everything else is reproduced 1:1.
 
+- **The page margins are symmetric** (30 mm on both sides), so that the text
+  block and the title pages are centred on the paper. The LaTeX class uses a
+  35 mm binding margin on the left and 25 mm on the right; both give the same
+  150 mm text width. Change the `margin` in `tdk.typ` if you need the binding
+  edge.
 - **Page numbering** starts at 1 on the first page of the main matter. The
   LaTeX class happens to start it two pages earlier (the table of contents page
   counts as page 1), which is not a requirement of the formal regulations.
